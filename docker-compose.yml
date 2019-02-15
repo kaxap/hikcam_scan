@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+# DBs
+    postgres:
+        restart: always
+        build: ./db/postgres/
+        command: postgres -c config_file=postgresql.conf
+        env_file: .dev_env
+        volumes:
+          - /data/dev/KZ_HIKCAM/pgdata:/var/lib/postgresql/data
+        ports:
+          - "${KZ_HIKCAM_INTERNAL_ADDRESS}:10100:5432"
+
+    rabbit:
+        restart: always
+        image: rabbitmq:3-management
+        env_file: .dev_env
+        volumes:
+          - /data/dev/hikcam/rabbitdata:/var/lib/rabbitmq
+        ports:
+          - "${KZ_HIKCAM_INTERNAL_ADDRESS}:10101:5672"
+          - "${KZ_HIKCAM_INTERNAL_ADDRESS}:10102:15672"
+
+# sevices
+    seed:
+        restart: on-failure
+        build: .
+        env_file: .dev_env
+        command: python seed.py
+        depends_on:
+          - postgres
+          - rabbit
+
+    harvest:
+        restart: on-failure
+        build: .
+        env_file: .dev_env
+        command: python harvest.py
+        depends_on:
+          - postgres
+          - rabbit
+          - seed

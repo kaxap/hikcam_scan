@@ -1,0 +1,4 @@
+pika
+antigate
+vk_api
+psycopg2
