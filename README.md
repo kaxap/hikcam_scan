@@ -1,6 +1,6 @@
 ﻿# Summary
 
-Distributed scanner for volnurable Hikvision cameras.
+Distributed scanner for vulnerable Hikvision cameras.
 Exploit info: https://ipvm.com/reports/hik-exploit
 
 For educational purposes only.
